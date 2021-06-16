@@ -1,0 +1,109 @@
+#!/usr/bin/bash
+
+function yy_find_images {
+	if [[ -n "$3" && "$3" == "-p0" ]]; then
+		local pz="-print0"
+	else
+		local pz=""
+	fi
+	if [[ -z "$2" ]] || ! [[ "$pz" =~ ^-p0$|^$ ]]; then
+		echo "Usage: $0 <directory> <what> [-p0]"
+		echo "  what = all|jpng"
+		return 1
+	fi
+	if [[ "$2" == "all" ]]; then
+		find $1 -type f -exec file {} \; | awk -F: '{if ($2 ~/image/) print $1}' $pz
+	elif [[ "$2" == "jpng" ]]; then
+    find $1 -type f -iregex '.*\.\(jpg\|jpeg\|png\)' $pz
+  fi
+}
+
+
+function smartresize {
+	function sms {
+		backup_file=$1.bak
+		cp $1 $backup_file
+		size_file_before=$(stat -c%s $1)
+		if [ -z "$2" ]; then
+			path_args=""
+		else
+			path_args="-path $2"
+		fi
+		mogrify $path_args -filter Triangle -define filter:support=2 -thumbnail ${3:-'2048x1536>'} -unsharp 0.25x0.08+8.3+0.045 -dither None -posterize 136 -quality 82 -define jpeg:fancy-upsampling=off -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -define png:exclude-chunk=all -interlace none -colorspace sRGB $1
+		size_file_after=$(stat -c%s $1)
+		if [[ $size_file_after -lt $size_file_before ]]; then
+			echo "Size decreased, removing backup file.."
+			rm -f $backup_file
+		else
+			echo "Size did not decrease, restauring backup file.."
+			mv $backup_file $1
+		fi
+	}
+	# Recursive (or not) version of smartresize
+	if [ -f $1 ]; then
+		sms $1
+	elif [ -d $1  ]; then
+		if hash parallel 2>/dev/null; then 
+			echo "Running optimization with gnu's parallel.."
+			# find $1 -type f -print0 | parallel -0 --pipe sms {}
+			yy_find_images $1 jpng -p0 | parallel -0 --pipe sms {}
+		else
+			echo "WARNING: Consider installing gnu's parallel to improve mass resize speed."
+			yy_find_images $1 jpng -p0 | while read f; do sms "$f" ; done
+		fi
+	else
+		echo "ERROR: \'$1\' is not a valid file/directory"
+	fi
+}
+
+function yy_optimize {
+	image_optim -r $1 --allow-lossy --jpegoptim-max-quality 82 --jpegrecompress-quality 2 --pngquant-quality 70-80
+}
+
+function yy_resize_optimize {
+	# Runs smartresize and image_optim (must be installed) on file or folder
+	read -p "WARNING: This operation is lossy, do you wish to continue? y/n:" -n 1 -r
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		echo "Performing smart resizing..."
+		smartresize $1 && \
+			echo "_____________ Resizing successfully done! ______________" && \
+			echo "Performing Optimization..." && \ 
+			yy_optimize $1 && \
+			echo "_____________ Optimization successfully done! ______________"
+	fi
+}
+
+#------------------------------------------------------------------
+#      MAIN
+#------------------------------------------------------------------
+
+main() {
+	if [ -z "$1" ]; then
+		echo "Usage: $0 <command> <command arguments>"
+    return 1
+	fi
+  command=$1
+	case $command in
+
+		resize)
+			smartresize "${@:2}"
+			;;
+
+		optimize)
+			yy_optimize "${@:2}"
+			;;
+
+		find)
+			yy_find_images "${@:2}"
+			;;
+
+		*)
+			yy_resize_optimize "$@"
+			;;
+
+  esac
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css">
+</head>
+
+
+<body>
+
+<h1>Linux tips n tricks</h1>
+
+<h2>Useful Commands:</h2>
+
+<h3>Check if hardware acceleration is enabled:</h3>
+
+<p><code class="language-bash" >
+   glxinfo | grep 'direct rendering'
+</code></p>
+
+<h3>Display linux kernel</h3>
+
+<p><code class="language-bash" >
+   uname -r
+</code></p>
+
+<h2>System Optimization:</h2>
+
+<h3>Change swapinnes to 10:</h3>
+
+<p>Create <code>/etc/sysctl.d/99-swappiness.conf</code> and add
+<code>vm.swappiness = 10</code></p>
+
+<h3>Change swapinnes to 10:</h3>
+
+<p>Create <code>/etc/sysctl.d/99-vfs_cache_pressure.conf</code>  and add
+<code>vm.vfs_cache_pressure = 50</code></p>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+<link rel="stylesheet"
+      href="mdStyle.css">

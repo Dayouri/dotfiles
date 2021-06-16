@@ -38,7 +38,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
 
 " Coc (completion and more) Use release branch (recommend)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': { -> coc#util#install() } }
 
 " Airline
 " Plug 'vim-airline/vim-airline'
@@ -93,6 +93,10 @@ Plug 'yegappan/taglist'
 
 " LSP and tags symbols
 Plug 'liuchengxu/vista.vim'
+
+" statusline from tmux (support for powerline
+"  symbols and vim/airline/lightline statusline integration)
+Plug 'edkolev/tmuxline.vim'
 
 " Colorschemes
 Plug 'xolox/vim-misc'
@@ -356,6 +360,23 @@ let g:echodoc#enable_at_startup = 1
 
 " let g:rainbow_active = 1
 
+
+""""""""""""""""""""""""""""""""""""""
+" Tmux line
+"
+""""""""""""""""""""""""""""""""""""""
+let g:tmuxline_preset = {
+      \'a'    : '#(whoami)@#H',
+			\'b'    : '#(pwd)',
+      \'c'    : '#(cd #{pane_current_path}; git rev-parse --abbrev-ref HEAD)',
+      \'win'  : ['#I', '#W'],
+      \'cwin' : ['#I', '#W'],
+      \'x'    : '',
+      \'y'    : ['%d-%m-%y', '%R'],
+      \'z'    : '#(~/yy/bin/battery -t)'}
+
+
+
 """"""""""""""""""""""""""""""""""""""
 " Signify
 "
@@ -493,6 +514,25 @@ set grepprg=rg\ --vimgrep\ --smart-case\ --follow
 " <COC.nvim>
 "
 """"""""""""""""""""""""""""""""""""""
+
+let g:coc_global_extensions = [
+\ 'coc-css',
+\ 'coc-emmet',
+\ 'coc-eslint',
+\ 'coc-explorer',
+\ 'coc-highlight',
+\ 'coc-html',
+\ 'coc-json',
+\ 'coc-prettier',
+\ 'coc-project',
+\ 'coc-sh',
+\ 'coc-snippets',
+\ 'coc-tag',
+\ 'coc-tsserver',
+\ 'coc-xml',
+\ 'coc-yaml',
+\ ]
+
 " Use :Prettier to format current buffer
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " <leader>f for range format
