@@ -27,6 +27,7 @@ fi
 setDefaults() {
     pmset_on=0
     output_tmux=0
+    logo_only=0
     output_zsh=0
     ascii=0
     ascii_bar='=========='
@@ -160,7 +161,11 @@ print_status() {
     fi
 
     if ((output_tmux)); then
-        printf "%s%s %s%s" "$COLOR" "[$BATT_PCT%]" "$GRAPH" "#[default]"
+        if ((logo_only)); then
+            printf "%s%s %s%s" "$COLOR" "$GRAPH" "#[default]"
+        else
+            printf "%s%s %s%s" "$COLOR" "[$BATT_PCT%]" "$GRAPH" "#[default]"
+        fi
     elif ((output_zsh)); then
         printf "%%B%s%s %s" "$COLOR" "[$BATT_PCT%%]" "$GRAPH"
     else
@@ -169,7 +174,7 @@ print_status() {
 }
 
 # Read args
-while getopts ":g:m:w:tzeab:p" opt; do
+while getopts ":g:m:w:tlzeab:p" opt; do
     case $opt in
         g)
             good_color=$OPTARG
@@ -185,6 +190,9 @@ while getopts ":g:m:w:tzeab:p" opt; do
             good_color="green"
             middle_color="yellow"
             warn_color="red"
+            ;;
+        l)
+            logo_only=1
             ;;
         z)
             output_zsh=1
