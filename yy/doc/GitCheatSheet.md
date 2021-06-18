@@ -2,10 +2,9 @@
 
 ## Creating Repositories
 
-```bash
+```sh
 # create new repository in current directory
 git init
-
 # clone a remote repository
 git clone [url]
 # for example cloning the entire jquery repo locally
@@ -16,7 +15,9 @@ git clone https://github.com/jquery/jquery
 
 ## Branches and Tags
 
-```bash
+```sh
+
+
 # List all existing branches with the latest commit comment 
 git branch –av
 
@@ -27,6 +28,11 @@ git checkout [branch]
 git branch [new-branch]
 
 # Create a new tracking branch based on a remote branch
+#   New way:
+git checkout <branch>
+#   Or:
+git checkout -b <branch> --track <remote>/<branch>
+#   Or:
 git checkout --track [remote/branch]
 # for example track the remote branch named feature-branch-foo
 git checkout --track origin/feature-branch-foo
@@ -42,7 +48,7 @@ git tag [tag-name]
 
 ## Local Changes
 
-```bash
+```sh
 # List all new or modified files - showing which are to staged to be commited and which are not 
 git status
 
@@ -81,7 +87,7 @@ git reset [file]
 
 ## Commit History
 
-```bash
+```sh
 # Show all commits, starting from the latest 
 git log 
 
@@ -96,7 +102,7 @@ git blame -c [file]
 
 ## Update and Publish
 
-```bash
+```sh
 # List all remotes 
 git remote -v
 
@@ -117,13 +123,14 @@ git branch -dr [remote/branch]
 
 # Publish your tags to a remote
 git push --tags
+
 ```
 
 
 
 ## Merge & Rebase
 
-```bash
+```sh
 # Merge [branch] into your current HEAD 
 git merge [branch]
 
@@ -148,12 +155,14 @@ git rm <resolved- file>
 
 ## Undo
 
-```bash
+```sh
 # Discard all local changes and start working on the current branch from the last commit
 git reset --hard HEAD
 
 # Discard local changes to a specific file 
 git checkout HEAD [file]
+# Or
+git checkout -- [file]
 
 # Revert a commit by making a new commit which reverses the given [commit]
 git revert [commit]
@@ -167,6 +176,31 @@ git reset [commit]
 #  Reset your current branch to a previous commit and preserve staged local changes 
 git reset --keep [commit]
 ```
+
+## Rename local and remote branch
+
+### Rename local 
+
+```sh
+# Switch to the local branch you want to rename:
+git checkout <old_name>Copy
+
+# Rename the local branch:
+git branch -m <new_name>Copy
+```
+
+If you’ve already pushed the `<old_name>` branch to the [remote repository](https://linuxize.com/post/how-to-add-git-remotes/) , perform the next steps to rename the remote branch.
+
+### Rename remote
+
+```sh
+# Push the `<new_name>` local branch and reset the upstream branch:
+git push origin -u <new_name>Copy
+# Delete the `<old_name>` remote branch:
+git push origin --delete <old_name>Copy
+```
+
+- [How to Undo Last Git Commit](https://linuxize.com/post/undo-last-git-commit/)
 
 ### Git Version 2.x
 

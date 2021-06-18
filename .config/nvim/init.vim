@@ -120,7 +120,13 @@ call plug#end()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 set encoding=utf-8
+let mapleader=","
+
+" Use the system clipboard by default.
+set clipboard=unnamedplus
+
 set numberwidth=1
+
 " When you press <leader>re you can search and replace the selected text
 vnoremap <silent> <leader>re :call VisualSelection('replace', '')<CR>
 
@@ -140,8 +146,7 @@ set ruler
 
 " Ignore case when searching
 set ignorecase
-
-" When searching try to be smart about cases 
+" When searching try to be smart about cases (ignorecase needs to be set)
 set smartcase
 
 " Makes search act like search in modern browsers
@@ -168,7 +173,6 @@ filetype plugin indent on
 " set ttymouse=sgr
 " important
 set mouse=a             " mouse support
-let mapleader=","
 set laststatus=2
 set showtabline=2
 set softtabstop=0 noexpandtab
@@ -181,7 +185,6 @@ set noshowmatch
 set nolazyredraw
 set smartindent
 set autoindent          " keeps indentation on new line
-filetype indent on      " load filetype-specific indent files
 set wildmenu            " visual autocomplete for command menu
 set showmatch           " highlight matching [{()}]
 set incsearch           " search as characters are entered
@@ -191,10 +194,14 @@ nnoremap <C-H> :nohlsearch<CR>
 set foldenable          " enable folding
 set foldlevelstart=10   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
-set foldmethod=indent   " fold based on indent level
+set foldmethod=syntax   " fold based on indent level
 " syntax enable
 
 "set nolazyredraw
+
+" Open new split panes to right and bottom, which feels more natural than Vim’s default:
+set splitbelow
+set splitright
 
 if has("gui_running")
   set guicursor=n-v-c-sm:block,i-ci-ve:block,r-cr-o:blocks
@@ -202,24 +209,6 @@ endif
 
 " Allows you to save files you opened without write permissions via sudo
 cmap w!! w !sudo tee %
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vista.vim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! NearestMethodOrFunction() abort
-  return get(b:, 'vista_nearest_method_or_function', '')
-endfunction
-
-set statusline+=%{NearestMethodOrFunction()}
-
-" By default vista.vim never run if you don't call it explicitly.
-"
-" If you want to show the nearest function in your statusline automatically,
-" you can add the following line to your vimrc
-autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
-
-" automatically use the + buffer (the system clipboard) by default.
-set clipboard=unnamed
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -236,9 +225,11 @@ map <leader>h :%s///g<left><left><left>
 
 nnoremap <esc><esc> :noh<return><esc>
 
-" clipboard copy/paste
-nnoremap <leader>y "*y
-nnoremap <leader>p "*p
+" replace word in Visual mode, without changing the register
+xnoremap <silent> <leader>p p:let @+=@0<CR>
+
+" delete without changing the register
+nnoremap <leader>d "_d
 
 " ____        terminal        ____
 tnoremap <Esc> <C-\><C-n>
@@ -246,15 +237,11 @@ tnoremap <Esc> <C-\><C-n>
 " move vertically by visual line (go to 'fake' lines)
 nnoremap j gj
 nnoremap k gk
-" Open new split panes to right and bottom, which feels more natural than Vim’s default:
-set splitbelow
-set splitright
 
 " Buffers
 """""""""""""""""
 
 " close current buffer
-nmap <leader>bc :bd<cr>
 nmap <Space>q :bd<cr>
 
 
@@ -263,10 +250,6 @@ nnoremap <Space>n :bn<CR>
 nnoremap <Space>p :bp<CR>
 " nnoremap <S-F8> :sbprevious<CR>
 " nnoremap <S-F8> :sbprevious<CR>
-
-" When F5 is pressed, a numbered list of file names is printed, and the user needs to type a single number based on the 'menu' and press enter. The 'menu' disappears after choosing the number so it appears only when you need it.
-nnoremap <F5> :buffers<CR>:buffer<Space>
-
 
 "Fast saving
 nmap <leader>w :w!<cr>
@@ -335,7 +318,7 @@ function! VisualSelection(direction, extra_filter) range
     let @" = l:saved_reg
 endfunction
 
-" Zoom / Restore window a la tmux
+" Zoom / Restore window a la tmux with leader + z
 function! s:ZoomToggle() abort
     if exists('t:zoomed') && t:zoomed
         execute t:zoom_winrestcmd
@@ -360,21 +343,35 @@ let g:echodoc#enable_at_startup = 1
 
 " let g:rainbow_active = 1
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vista.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
+set statusline+=%{NearestMethodOrFunction()}
+
+" By default vista.vim never run if you don't call it explicitly.
+"
+" If you want to show the nearest function in your statusline automatically,
+" you can add the following line to your vimrc
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+
 
 """"""""""""""""""""""""""""""""""""""
 " Tmux line
 "
 """"""""""""""""""""""""""""""""""""""
-let g:tmuxline_preset = {
-      \'a'    : '#(whoami)@#H',
-			\'b'    : '#(pwd)',
-      \'c'    : '#(cd #{pane_current_path}; git rev-parse --abbrev-ref HEAD)',
-      \'win'  : ['#I', '#W'],
-      \'cwin' : ['#I', '#W'],
-      \'x'    : '',
-      \'y'    : ['%d-%m-%y', '%R'],
-      \'z'    : '#(~/yy/bin/battery -t)'}
-
+" let g:tmuxline_preset = {
+"       \'a'    : '#(whoami)@#H',
+" 			\'b'    : '#(pwd)',
+"       \'c'    : '#(cd #{pane_current_path}; git rev-parse --abbrev-ref HEAD)',
+"       \'win'  : ['#I', '#W'],
+"       \'cwin' : ['#I', '#W'],
+"       \'x'    : '',
+"       \'y'    : ['%d-%m-%y', '%R'],
+"       \'z'    : '#(battery -t -l)'}
 
 
 """"""""""""""""""""""""""""""""""""""
