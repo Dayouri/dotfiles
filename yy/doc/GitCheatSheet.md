@@ -2,7 +2,7 @@
 
 ## Creating Repositories
 
-```sh
+```shell
 # create new repository in current directory
 git init
 # clone a remote repository
