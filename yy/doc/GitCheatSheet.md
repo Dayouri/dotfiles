@@ -16,8 +16,6 @@ git clone https://github.com/jquery/jquery
 ## Branches and Tags
 
 ```sh
-
-
 # List all existing branches with the latest commit comment 
 git branch –av
 
@@ -183,10 +181,10 @@ git reset --keep [commit]
 
 ```sh
 # Switch to the local branch you want to rename:
-git checkout <old_name>Copy
+git checkout <old_name>
 
 # Rename the local branch:
-git branch -m <new_name>Copy
+git branch -m <new_name>
 ```
 
 If you’ve already pushed the `<old_name>` branch to the [remote repository](https://linuxize.com/post/how-to-add-git-remotes/) , perform the next steps to rename the remote branch.
@@ -195,9 +193,9 @@ If you’ve already pushed the `<old_name>` branch to the [remote repository](ht
 
 ```sh
 # Push the `<new_name>` local branch and reset the upstream branch:
-git push origin -u <new_name>Copy
+git push origin -u <new_name>
 # Delete the `<old_name>` remote branch:
-git push origin --delete <old_name>Copy
+git push origin --delete <old_name>
 ```
 
 - [How to Undo Last Git Commit](https://linuxize.com/post/undo-last-git-commit/)
