@@ -1,7 +1,7 @@
 " started In Diff-Mode set diffexpr (plugin not loaded yet)
-if &diff
-  let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
-endif
+" if &diff
+"   let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+" endif
 
 syntax off
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -75,12 +75,14 @@ Plug 'KabbAmine/vCoolor.vim'
 " parenthesis rainbow
 Plug 'frazrepo/vim-rainbow'
 
-" Git plugin
+" Git plugins
 if has('nvim') || has('patch-8.0.902')
   Plug 'mhinz/vim-signify'
 else
   Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
+
+Plug'tpope/vim-fugitive'
 
 " Print function signatures in echo area
 Plug 'Shougo/echodoc.vim'

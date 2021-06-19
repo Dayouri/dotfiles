@@ -107,11 +107,11 @@ git remote -v
 # Add a new remote at [url] with the given local name
 git remote add [localname] [url]
 
-# Download all changes from a remote, but don‘t integrate into them locally
+# Get all changes from a remote, but don‘t integrate into them locally
 git fetch [remote]
 
-# Download all remote changes and merge them locally
-git pull [remote] [branch]
+# Fetch and merge [remote-branch] into the branch you're on
+git pull [remote] [remote-branch]
 
 # Publish local changes to a remote 
 git push [remote] [branch]
@@ -214,11 +214,32 @@ git push origin --delete <old_name>
 - `git add -A` is equivalent to `git add --all`
 - `git add -u` is equivalent to `git add --update`
 
-Author: 
+## vimdiff cheat sheet
 
-[![Matt Goldspink](https://www.gravatar.com/avatar/288be2ef60272388d06098d75f801a47?d=https%3A%2F%2Fs3.amazonaws.com%2Fcodementor%2Fassets%2Fimages%2Favatar%2FM.png&s=64)](https://www.codementor.io/@mattgoldspink)
+### git mergetool
 
-[Matt Goldspink](https://www.codementor.io/@mattgoldspink)
+In the middle file (future merged file), you can navigate between conflicts with `]c` and `[c`.
 
-Lead engineer with 10+ years development experience & background in delivering training courses
+Choose which version you want to keep with `:diffget //2` or `:diffget //3` (the `//2` and `//3` are unique identifiers for the target/master copy and the merge/branch copy file names).
 
+```
+:diffupdate (to remove leftover spacing issues)
+:only (once you’re done reviewing all conflicts, this shows only the middle/merged file)
+:wq (save and quit)
+git add .
+git commit -m “Merge resolved”
+```
+
+If you were trying to do a `git pull` when you ran into merge conflicts, type `git rebase –continue`.
+
+### vimdiff commands
+
+```
+]c :        - next difference
+[c :        - previous difference
+do          - diff obtain
+dp          - diff put
+zo          - open folded text
+zc          - close folded text
+:diffupdate - re-scan the files for differences
+```
